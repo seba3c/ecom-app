@@ -1,7 +1,7 @@
 import logging
 import time
 
-from app.schemas.tasks import CategoryCreatedPayload
+from app.schemas.category import CategoryCreatedPayload
 
 logger = logging.getLogger("app")
 

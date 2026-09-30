@@ -16,9 +16,9 @@ from app.schemas.category import (
     CategoryStream,
     CategoryDetail,
     CategoryInput,
+    CategoryCreatedPayload,
 )
 from app.schemas.common import Page, PaginationParams
-from app.schemas.tasks import CategoryCreatedPayload
 from app.services.category_service import CategoryService
 from app.services.pagination import validate_pagination
 from app.tasks.category_tasks import notify_category_created

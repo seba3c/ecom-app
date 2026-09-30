@@ -4,7 +4,6 @@ from datetime import datetime
 from pydantic import Field, field_validator
 
 from app.schemas.base import APIModel, BaseModel
-from app.schemas.common import PaginatedResponse
 
 
 class CategoryCreate(BaseModel):
@@ -20,10 +19,6 @@ class Category(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     created_at: datetime
     updated_at: datetime
-
-
-class CategoryList(PaginatedResponse[Category]):
-    pass
 
 
 CategoryBulkCreate = list[CategoryCreate]
@@ -45,5 +40,10 @@ class CategoryInput(APIModel):
 
 
 class CategoryDetail(APIModel):
+    id: int
+    name: str
+
+
+class CategoryCreatedPayload(BaseModel):
     id: int
     name: str

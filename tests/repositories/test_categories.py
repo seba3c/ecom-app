@@ -110,3 +110,42 @@ async def test_delete_category(repository):
 async def test_delete_category_not_found(repository):
     deleted = await repository.delete(1)
     assert deleted is False
+
+
+@pytest.mark.anyio
+async def test_page_sorts_and_counts_categories(repository):
+    await repository.create(CategoryCreate(name="Electronics"))
+    await repository.create(CategoryCreate(name="Books"))
+
+    page = await repository.page(0, 1, "name", "desc")
+
+    assert [item.name for item in page["content"]] == ["Electronics"]
+    assert page["total_elements"] == 2
+    assert page["total_pages"] == 2
+    assert page["last_page"] is False
+
+
+@pytest.mark.anyio
+async def test_bulk_create_persists_all_categories(repository):
+    await repository.bulk_create(
+        [CategoryCreate(name="Books"), CategoryCreate(name="Electronics")]
+    )
+
+    assert {item.name for item in await repository.list()} == {
+        "Books",
+        "Electronics",
+    }
+
+
+@pytest.mark.anyio
+async def test_update_duplicate_rolls_back(repository):
+    first = await repository.create(CategoryCreate(name="Books"))
+    second = await repository.create(CategoryCreate(name="Electronics"))
+    second_id = second.id
+
+    from app.core.exceptions import CategoryDuplicatedError
+
+    with pytest.raises(CategoryDuplicatedError):
+        await repository.update(second_id, CategoryUpdate(name=first.name))
+
+    assert (await repository.get(second_id)).name == "Electronics"

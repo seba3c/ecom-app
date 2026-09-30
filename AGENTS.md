@@ -32,11 +32,19 @@ uv add --dev <package>                       # add dev dependency
 - **`app/services/`** — business logic layer
 - **`app/repositories/`** — data access layer
 
+## Naming
+
+- Use plural entity names for endpoint and repository modules, such as `products.py` and `carts.py`.
+- Use singular entity names for model and schema modules, such as `product.py` and `cart.py`.
+- Name business logic modules `<entity>_service.py`, such as `cart_service.py`.
+- Name tests after the module they cover within the matching test package: `test_carts.py` for an endpoint or repository module, and `test_cart_service.py` for a service module.
+- Use descriptive feature or utility names for modules without an entity collection, such as `auth.py`, `health.py`, and `pagination.py`.
+
 ## Adding a New Endpoint
 
 1. Create `app/api/v1/endpoints/<feature>.py` with an `APIRouter`
 2. Import and register in `app/api/v1/router.py`: `api_router.include_router(feature.router, prefix="/<feature>", tags=["<feature>"])`
-3. Add tests in `tests/test_<feature>.py` using the `AsyncClient` + `ASGITransport` pattern from `tests/test_health.py`
+3. Add tests in `tests/api/v1/endpoints/test_<feature>.py` using the `AsyncClient` + `ASGITransport` pattern from `tests/api/v1/endpoints/test_health.py`
 
 ## Testing
 
