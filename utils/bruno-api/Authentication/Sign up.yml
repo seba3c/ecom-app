@@ -1,0 +1,28 @@
+info:
+  name: Sign up
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{api_url}}/auth/signup"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"username\":\"user3\",\r
+
+      \    \"email\":\"user3email@gmail.com\",\r
+
+      \    \"password\":\"password3\",\r
+
+      \    \"role\":[\"admin\"]\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

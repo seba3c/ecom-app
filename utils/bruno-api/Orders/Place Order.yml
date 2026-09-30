@@ -1,0 +1,32 @@
+info:
+  name: Place Order
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{api_url}}/orders"
+  body:
+    type: json
+    data: "{\r
+
+      \  \"paymentMethod\": \"card\",\r
+
+      \  \"addressId\": 1,\r
+
+      \  \"pgName\": \"Stripe\",\r
+
+      \  \"pgPaymentId\": \"pi_1FHEhK2eZvKYlo2CcK4UJNdW\",\r
+
+      \  \"pgStatus\": \"succeeded\",\r
+
+      \  \"pgResponseMessage\": \"Payment successful\"\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

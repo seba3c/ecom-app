@@ -1,0 +1,28 @@
+info:
+  name: Get Products By Category
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{api_url}}/public/categories/1/products?pageNumber=0&pageSize=10&sortBy=id&sortOrder=desc"
+  params:
+    - name: pageNumber
+      value: "0"
+      type: query
+    - name: pageSize
+      value: "10"
+      type: query
+    - name: sortBy
+      value: id
+      type: query
+    - name: sortOrder
+      value: desc
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

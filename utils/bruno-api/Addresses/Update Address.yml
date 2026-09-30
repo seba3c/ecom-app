@@ -1,0 +1,31 @@
+info:
+  name: Update Address
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{api_url}}/addresses/1"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"country\": \"USA\",\r
+
+      \    \"city\": \"San Francisco\",\r
+
+      \    \"street\": \"Market Street\",\r
+
+      \    \"pincode\": \"94103\",\r
+
+      \    \"buildingName\": \"Bay Apartments Updated\",\r
+
+      \    \"state\": \"California\"\r
+
+      }\r\n"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

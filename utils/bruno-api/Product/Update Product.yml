@@ -1,0 +1,30 @@
+info:
+  name: Update Product
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{api_url}}/admin/products/157"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"productName\": \"Adjustable dumbbell set for home workouts | Premium Quality\",\r
+
+      \    \"description\": \"Adjustable dumbbell set for home workouts, can be used indoors, outdoors, at your personal gym. This is available at lowest possible rates.\",\r
+
+      \    \"quantity\": 0,\r
+
+      \    \"price\": 90,\r
+
+      \    \"discount\": 10\r
+
+      }\r\n"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

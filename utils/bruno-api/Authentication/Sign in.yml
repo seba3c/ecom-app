@@ -1,0 +1,31 @@
+info:
+  name: Sign in
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{api_url}}/auth/signin"
+  body:
+    type: json
+    data: "{\r
+
+      \    \"username\":\"admin\",\r
+
+      \    \"password\":\"adminpass\"\r
+
+      }"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const jsonData = res.getBody();
+        bru.setEnvVar("jwtToken", jsonData.jwtToken);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
