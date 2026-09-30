@@ -1,0 +1,1193 @@
+openapi: 3.1.0
+info:
+  title: Ecom API
+  version: 1.0.0
+  description: |
+    Canonical HTTP contract shared by the Spring Boot and FastAPI ecommerce
+    services. All paths are relative to `/api`.
+
+    Protected operations accept a JWT in either the HTTP-only `ecommerce-app`
+    cookie or an `Authorization: Bearer <token>` header. When both are sent,
+    the cookie takes precedence. Operations under `/admin` require `ROLE_ADMIN`.
+  license:
+    name: Apache 2.0
+servers:
+  - url: /api
+    description: Current host
+  - url: http://localhost:8080/api
+    description: Spring Boot local development
+  - url: http://localhost:8000/api
+    description: FastAPI local development
+tags:
+  - name: Authentication
+    description: Authentication and user sessions
+  - name: Categories
+    description: Product category management
+  - name: Products
+    description: Product catalog management
+  - name: Addresses
+    description: Addresses owned by the authenticated user
+  - name: Carts
+    description: Shopping cart management
+  - name: Orders
+    description: Order and payment creation
+
+paths:
+  /auth/signin:
+    post:
+      tags: [Authentication]
+      operationId: signIn
+      summary: Sign in
+      description: Authenticates a user, returns a JWT, and sets the JWT cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Signed in successfully.
+          headers:
+            Set-Cookie:
+              $ref: '#/components/headers/JwtCookie'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: The credentials are invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadCredentialsError'
+
+  /auth/signup:
+    post:
+      tags: [Authentication]
+      operationId: signUp
+      summary: Register a user
+      description: Registers a user with a user or seller role. The user role is the default.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /auth/username:
+    get:
+      tags: [Authentication]
+      operationId: getCurrentUsername
+      summary: Get the current username
+      description: Returns an empty string when the request is anonymous.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: Current username, or an empty response body for an anonymous request.
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                authenticated:
+                  value: user
+                anonymous:
+                  value: ''
+
+  /auth/user:
+    get:
+      tags: [Authentication]
+      operationId: getCurrentUser
+      summary: Get the current user
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: Current user information, or a message when the request is anonymous.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UserInfo'
+                  - $ref: '#/components/schemas/Message'
+
+  /auth/signout:
+    post:
+      tags: [Authentication]
+      operationId: signOut
+      summary: Sign out
+      description: Clears the JWT cookie. Returns a bad request if no user is signed in.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+        - {}
+      responses:
+        '200':
+          description: Signed out successfully.
+          headers:
+            Set-Cookie:
+              $ref: '#/components/headers/JwtCookie'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /public/categories:
+    get:
+      tags: [Categories]
+      operationId: listCategories
+      summary: List categories
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: sortBy
+          in: query
+          description: Category field used for sorting.
+          schema:
+            type: string
+            enum: [id, name]
+            default: id
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: A page of categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /admin/categories:
+    post:
+      tags: [Categories]
+      operationId: createCategory
+      summary: Create a category
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '201':
+          description: Category created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /admin/categories/{categoryId}:
+    parameters:
+      - $ref: '#/components/parameters/CategoryId'
+    put:
+      tags: [Categories]
+      operationId: updateCategory
+      summary: Replace a category
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '200':
+          description: Category updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Categories]
+      operationId: deleteCategory
+      summary: Delete a category
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      responses:
+        '200':
+          description: The deleted category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /public/products:
+    get:
+      tags: [Products]
+      operationId: listProducts
+      summary: List products
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/ProductSortBy'
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: A page of products.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /public/products/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    get:
+      tags: [Products]
+      operationId: getProduct
+      summary: Get a product
+      responses:
+        '200':
+          description: Product details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /public/products/keyword/{keyword}:
+    parameters:
+      - name: keyword
+        in: path
+        required: true
+        description: Case-insensitive text matched against product names and descriptions.
+        schema:
+          type: string
+          minLength: 1
+    get:
+      tags: [Products]
+      operationId: searchProducts
+      summary: Search products
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/ProductSortBy'
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: A page of matching products.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /public/categories/{categoryId}/products:
+    parameters:
+      - $ref: '#/components/parameters/CategoryId'
+    get:
+      tags: [Products]
+      operationId: listProductsByCategory
+      summary: List products in a category
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/ProductSortBy'
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: A page of products in the category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/categories/{categoryId}/products:
+    parameters:
+      - $ref: '#/components/parameters/CategoryId'
+    post:
+      tags: [Products]
+      operationId: createProduct
+      summary: Create a product in a category
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/products/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    put:
+      tags: [Products]
+      operationId: updateProduct
+      summary: Replace a product
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Products]
+      operationId: deleteProduct
+      summary: Delete a product
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      responses:
+        '200':
+          description: The deleted product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /addresses:
+    get:
+      tags: [Addresses]
+      operationId: listAddresses
+      summary: List the current user's addresses
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The user's addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Addresses]
+      operationId: createAddress
+      summary: Create an address
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+      responses:
+        '201':
+          description: Address created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /addresses/{addressId}:
+    parameters:
+      - $ref: '#/components/parameters/AddressId'
+    get:
+      tags: [Addresses]
+      operationId: getAddress
+      summary: Get one of the current user's addresses
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Address details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Addresses]
+      operationId: updateAddress
+      summary: Replace one of the current user's addresses
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+      responses:
+        '200':
+          description: Address updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Addresses]
+      operationId: deleteAddress
+      summary: Delete one of the current user's addresses
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Address deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /my_cart:
+    get:
+      tags: [Carts]
+      operationId: getCart
+      summary: Get the current user's cart
+      description: Creates an empty cart when the user does not yet have one.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Cart details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /my_cart/{productId}/quantity/{quantity}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/Quantity'
+    post:
+      tags: [Carts]
+      operationId: addProductToCart
+      summary: Add a product quantity to the current user's cart
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Product quantity added to the cart.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Carts]
+      operationId: updateCartProductQuantity
+      summary: Set a product quantity in the current user's cart
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Product quantity updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /my_cart/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+    delete:
+      tags: [Carts]
+      operationId: removeProductFromCart
+      summary: Remove a product from the current user's cart
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Updated cart details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /admin/carts:
+    get:
+      tags: [Carts]
+      operationId: listCarts
+      summary: List all carts
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      x-required-roles: [ROLE_ADMIN]
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: sortBy
+          in: query
+          description: Cart field used for sorting.
+          schema:
+            type: string
+            enum: [id, totalPrice, user]
+            default: id
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: A page of carts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /orders:
+    post:
+      tags: [Orders]
+      operationId: placeOrder
+      summary: Place an order from the current user's cart
+      description: Creates an order and empties the current user's cart.
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
+      responses:
+        '201':
+          description: Order created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: ecommerce-app
+      description: HTTP-only JWT cookie set by the sign-in operation.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  headers:
+    JwtCookie:
+      description: The `ecommerce-app` authentication cookie.
+      schema:
+        type: string
+      example: ecommerce-app=eyJhbGciOiJIUzI1NiJ9...; Path=/api; HttpOnly
+
+  parameters:
+    PageNumber:
+      name: pageNumber
+      in: query
+      description: Zero-based page index.
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        default: 0
+    PageSize:
+      name: pageSize
+      in: query
+      description: Number of items per page.
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 50
+    SortOrder:
+      name: sortOrder
+      in: query
+      description: Sort direction. Values are case-insensitive.
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+    ProductSortBy:
+      name: sortBy
+      in: query
+      description: Product field used for sorting.
+      schema:
+        type: string
+        enum: [id, name, description, price, quantity, discount, category]
+        default: id
+    CategoryId:
+      name: categoryId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    ProductId:
+      name: productId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    AddressId:
+      name: addressId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    Quantity:
+      name: quantity
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+
+  responses:
+    BadRequest:
+      description: The request is invalid or violates a business rule.
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Message'
+              - $ref: '#/components/schemas/ValidationErrors'
+    Unauthorized:
+      description: Authentication is required or the supplied JWT is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    Forbidden:
+      description: The authenticated user does not have `ROLE_ADMIN`.
+    NotFound:
+      description: The requested resource does not exist or is not owned by the current user.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+
+  schemas:
+    SignInRequest:
+      type: object
+      additionalProperties: false
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: user
+        password:
+          type: string
+          format: password
+          example: userpass
+
+    SignUpRequest:
+      type: object
+      additionalProperties: false
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+        email:
+          type: string
+          format: email
+          maxLength: 50
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 40
+        roles:
+          type: array
+          description: Defaults to `["user"]` when omitted or empty. The admin role cannot be self-assigned.
+          uniqueItems: true
+          items:
+            type: string
+            enum: [user, seller]
+
+    UserInfo:
+      type: object
+      additionalProperties: false
+      required: [id, username, roles, jwtToken]
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [ROLE_USER, ROLE_SELLER, ROLE_ADMIN]
+        jwtToken:
+          type: [string, 'null']
+          description: Present after sign-in; null when returned by the current-user operation.
+
+    BadCredentialsError:
+      type: object
+      additionalProperties: false
+      required: [message, status]
+      properties:
+        message:
+          type: string
+          const: Bad credentials
+        status:
+          type: boolean
+          const: false
+
+    Message:
+      type: object
+      additionalProperties: false
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    ValidationErrors:
+      type: object
+      description: Field names mapped to validation messages.
+      additionalProperties:
+        type: string
+      minProperties: 1
+
+    UnauthorizedError:
+      type: object
+      additionalProperties: false
+      required: [status, error, message, path]
+      properties:
+        status:
+          type: integer
+          const: 401
+        error:
+          type: string
+          const: Unauthorized
+        message:
+          type: string
+        path:
+          type: string
+
+    CategoryInput:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 5
+
+    Category:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
+    CategoryPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [content]
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Category'
+
+    ProductInput:
+      type: object
+      additionalProperties: false
+      required: [name, description, quantity, price, discount]
+      properties:
+        name:
+          type: string
+          minLength: 5
+        description:
+          type: string
+          minLength: 1
+        quantity:
+          type: integer
+          format: int32
+          minimum: 0
+        price:
+          $ref: '#/components/schemas/NonNegativeMoney'
+        discount:
+          $ref: '#/components/schemas/NonNegativeMoney'
+
+    Product:
+      type: object
+      additionalProperties: false
+      required: [id, name, description, quantity, price, discount, category]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+        price:
+          $ref: '#/components/schemas/Money'
+        discount:
+          $ref: '#/components/schemas/Money'
+        category:
+          $ref: '#/components/schemas/Category'
+
+    ProductPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [content]
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+
+    AddressInput:
+      type: object
+      required: [streetLine1, city, state, country, zipCode]
+      properties:
+        streetLine1:
+          type: string
+          minLength: 1
+        streetLine2:
+          type: [string, 'null']
+        city:
+          type: string
+          minLength: 3
+        state:
+          type: string
+          minLength: 3
+        country:
+          type: string
+          minLength: 2
+        zipCode:
+          type: string
+          minLength: 1
+
+    Address:
+      allOf:
+        - $ref: '#/components/schemas/AddressInput'
+        - type: object
+          required: [id, streetLine2]
+          properties:
+            id:
+              type: integer
+              format: int64
+
+    AddressList:
+      type: object
+      additionalProperties: false
+      required: [content]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+
+    CartItem:
+      type: object
+      additionalProperties: false
+      required: [id, quantity, price, discount, product]
+      properties:
+        id:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+        price:
+          $ref: '#/components/schemas/Money'
+        discount:
+          $ref: '#/components/schemas/Money'
+        product:
+          $ref: '#/components/schemas/Product'
+
+    Cart:
+      type: object
+      additionalProperties: false
+      required: [id, totalPrice, cartItems]
+      properties:
+        id:
+          type: integer
+          format: int64
+        totalPrice:
+          $ref: '#/components/schemas/Money'
+        cartItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+
+    CartPage:
+      allOf:
+        - $ref: '#/components/schemas/PageMetadata'
+        - type: object
+          required: [content]
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cart'
+
+    OrderInput:
+      type: object
+      additionalProperties: false
+      required: [addressId, paymentMethod, pgName]
+      properties:
+        addressId:
+          type: integer
+          format: int64
+          minimum: 1
+        paymentMethod:
+          type: string
+          minLength: 4
+        pgName:
+          type: string
+          minLength: 1
+        pgPaymentId:
+          type: [string, 'null']
+        pgStatus:
+          type: [string, 'null']
+        pgResponse:
+          type: [string, 'null']
+
+    Order:
+      type: object
+      additionalProperties: false
+      required: [id, email, items, orderDate, totalAmount, status, shippingAddressId, payment]
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          format: email
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        orderDate:
+          type: string
+          format: date-time
+        totalAmount:
+          $ref: '#/components/schemas/Money'
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, SHIPPED, DELIVERED, COMPLETED, CANCELLED]
+        shippingAddressId:
+          type: integer
+          format: int64
+        payment:
+          $ref: '#/components/schemas/Payment'
+
+    OrderItem:
+      type: object
+      additionalProperties: false
+      required: [id, quantity, price, discount, product]
+      properties:
+        id:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+        price:
+          $ref: '#/components/schemas/Money'
+        discount:
+          $ref: '#/components/schemas/Money'
+        product:
+          $ref: '#/components/schemas/Product'
+
+    Payment:
+      type: object
+      additionalProperties: false
+      required: [id, method, pgName, pgPaymentId, pgStatus, pgResponse]
+      properties:
+        id:
+          type: integer
+          format: int64
+        method:
+          type: string
+        pgName:
+          type: string
+        pgPaymentId:
+          type: [string, 'null']
+        pgStatus:
+          type: [string, 'null']
+        pgResponse:
+          type: [string, 'null']
+
+    PageMetadata:
+      type: object
+      required: [pageNumber, pageSize, totalElements, totalPages, lastPage]
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+          minimum: 0
+        pageSize:
+          type: integer
+          format: int32
+          minimum: 1
+        totalElements:
+          type: integer
+          format: int64
+          minimum: 0
+        totalPages:
+          type: integer
+          format: int32
+          minimum: 0
+        lastPage:
+          type: boolean
+
+    Money:
+      type: number
+      format: double
+      description: Decimal monetary amount serialized as a JSON number.
+      examples: [19.99]
+
+    NonNegativeMoney:
+      allOf:
+        - $ref: '#/components/schemas/Money'
+        - minimum: 0

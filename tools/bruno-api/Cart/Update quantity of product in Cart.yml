@@ -5,17 +5,17 @@ info:
 
 http:
   method: PUT
-  url: "{{api_url}}/my_cart/:product_id/quantity/:quantity"
+  url: "{{api_url}}/my_cart/:productId/quantity/:quantity"
   headers:
     - name: ""
       value: ""
       disabled: true
   params:
-    - name: product_id
+    - name: productId
       value: "1"
       type: path
     - name: quantity
-      value: "-1"
+      value: "2"
       type: path
 
 settings:

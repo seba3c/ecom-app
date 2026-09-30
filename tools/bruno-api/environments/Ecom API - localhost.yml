@@ -10,5 +10,5 @@ variables:
     value: "{{api_host}}:{{api_port}}/api"
     description: ""
   - name: jwtToken
-    value: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc5MDc3ODM5OCwiZXhwIjoxNzkwODY0Nzk4fQ.hnUSgUO6tqCTLWcmLrAZYiLiBw-r6yOXMB9aYflSIW2U25aIfpZJBO5KMws0JwjK3HNiDNHGLMKvFvTyANpVOg
+    value: ""
     description: ""

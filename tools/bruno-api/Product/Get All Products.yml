@@ -6,29 +6,16 @@ info:
 http:
   method: GET
   url: "{{api_url}}/public/products?sortBy=price&sortOrder=desc&pageSize=20"
-  headers:
-    - name: Authorization
-      value: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTcxNTE4MzY0OSwiZXhwIjoxNzE1MTg2NjQ5fQ.XS0-JKPhMJMrULRonqYLQzhJFTFOXGxkeuFj4q4mxeE
-      disabled: true
   params:
     - name: pageNumber
-      value: "1"
+      value: "0"
       type: query
-      disabled: true
     - name: sortBy
       value: price
       type: query
     - name: sortOrder
       value: desc
       type: query
-    - name: keyword
-      value: blender
-      type: query
-      disabled: true
-    - name: category
-      value: Electronics
-      type: query
-      disabled: true
     - name: pageSize
       value: "20"
       type: query

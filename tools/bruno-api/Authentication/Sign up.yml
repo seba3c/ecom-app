@@ -16,7 +16,7 @@ http:
 
       \    \"password\":\"password3\",\r
 
-      \    \"role\":[\"admin\"]\r
+      \    \"roles\":[\"seller\"]\r
 
       }"
   auth: inherit

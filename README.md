@@ -12,7 +12,7 @@ ecom-app/
 |   |-- api-spring/          # Java 21, Spring Boot 4, Gradle
 |   `-- api-fastapi/         # Python 3.12, FastAPI, uv
 |-- contracts/
-|   `-- openapi/             # Shared API contract placeholder
+|   `-- openapi/             # Canonical shared OpenAPI contract
 `-- tools/
     `-- bruno-api/           # Bruno API collection
 ```
@@ -63,7 +63,9 @@ See [the FastAPI README](services/api-fastapi/README.md) for configuration detai
 
 ## Shared API behavior
 
-Both implementations expose routes below `/api`. Until the canonical OpenAPI document is added under `contracts/openapi`, the Spring API defines the shared paths, payloads, pagination, authentication, and authorization behavior.
+Both implementations expose routes below `/api`. The canonical shared paths,
+payloads, pagination, authentication, and authorization behavior are defined in
+[`contracts/openapi/openapi.yaml`](contracts/openapi/openapi.yaml).
 
 Local authentication uses the `ecommerce-app` HTTP-only JWT cookie. Development seed accounts are `user/userpass`, `seller/sellerpass`, and `admin/adminpass`.
 

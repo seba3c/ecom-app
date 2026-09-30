@@ -5,12 +5,12 @@ info:
 
 http:
   method: PUT
-  url: "{{api_url}}/admin/products/157"
+  url: "{{api_url}}/admin/products/1"
   body:
     type: json
     data: "{\r
 
-      \    \"productName\": \"Adjustable dumbbell set for home workouts | Premium Quality\",\r
+      \    \"name\": \"Adjustable dumbbell set for home workouts | Premium Quality\",\r
 
       \    \"description\": \"Adjustable dumbbell set for home workouts, can be used indoors, outdoors, at your personal gym. This is available at lowest possible rates.\",\r
 

@@ -5,13 +5,13 @@ info:
 
 http:
   method: DELETE
-  url: "{{api_url}}/my_cart/:product_id"
+  url: "{{api_url}}/my_cart/:productId"
   headers:
     - name: ""
       value: ""
       disabled: true
   params:
-    - name: product_id
+    - name: productId
       value: "1"
       type: path
 

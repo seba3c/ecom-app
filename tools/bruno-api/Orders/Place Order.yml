@@ -20,7 +20,7 @@ http:
 
       \  \"pgStatus\": \"succeeded\",\r
 
-      \  \"pgResponseMessage\": \"Payment successful\"\r
+      \  \"pgResponse\": \"Payment successful\"\r
 
       }"
   auth: inherit

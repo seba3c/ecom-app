@@ -8,23 +8,15 @@ http:
   url: "{{api_url}}/addresses"
   body:
     type: json
-    data: "{\r
-
-      \    \"country\": \"USA\",\r
-
-      \    \"city\": \"San Francisco\",\r
-
-      \    \"streetLine1\": \"Market Street\",\r
-
-      \    \"pincode\": \"94103\",\r
-
-      \    \"buildingName\": \"Bay Apartments\",\r
-
-      \    \"state\": \"California\",\r
-
-      \    \"zipCode\": 46015\r
-
-      }\r\n"
+    data: |-
+      {
+        "streetLine1": "Market Street",
+        "streetLine2": "Bay Apartments",
+        "city": "San Francisco",
+        "state": "California",
+        "country": "USA",
+        "zipCode": "94103"
+      }
 
 settings:
   encodeUrl: true
