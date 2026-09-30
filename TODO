@@ -1,3 +1,0 @@
-* Authentication layer with JWT tokens and 2 kind of users: admin and user. Include also JWT cookie authentication.
-* Add Product entity and CRUD operations
-* Add an example of Celery tasks
