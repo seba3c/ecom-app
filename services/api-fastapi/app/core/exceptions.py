@@ -99,9 +99,9 @@ async def validation_error_handler(
             and "categories" in request.url.path
             and "products" not in request.url.path
         ):
-            message = "Category name must have at least 5 characters"
+            message = "Category name must have at least 2 characters"
         elif error_type == "string_too_short" and field == "name":
-            message = "Product name must have at least 5 characters"
+            message = "Product name must have at least 2 characters"
         elif error_type == "string_too_short" and field in {
             "streetLine1",
             "city",

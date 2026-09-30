@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProductCreateRequest {
 
     @NotBlank(message = "Product name must not be blank")
-    @Size(min = 5, message = "Product name must have at least 5 characters")
+    @Size(min = 2, message = "Product name must have at least 2 characters")
     private String name;
 
     @NotBlank(message = "Product description must not be blank")

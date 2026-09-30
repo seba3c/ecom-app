@@ -84,3 +84,29 @@ async def test_product_page_sort_and_keyword(client):
     assert second.json()["lastPage"] is True
     keyword = await client.get("/api/public/products/keyword/POCKET")
     assert [item["name"] for item in keyword.json()["content"]] == ["Phone Plus"]
+
+
+@pytest.mark.anyio
+async def test_product_name_two_character_boundary(client):
+    category_id = await category(client)
+    url = f"/api/admin/categories/{category_id}/products"
+    admin = headers("admin")
+    created = await client.post(url, json={**PRODUCT, "name": "TV"}, headers=admin)
+    assert created.status_code == 201
+    updated = await client.put(
+        f"/api/admin/products/{created.json()['id']}",
+        json={**PRODUCT, "name": "PC"},
+        headers=admin,
+    )
+    assert updated.status_code == 200
+    for method_url, method in (
+        (url, client.post),
+        (f"/api/admin/products/{created.json()['id']}", client.put),
+    ):
+        invalid = await method(method_url, json={**PRODUCT, "name": "P"}, headers=admin)
+        assert invalid.status_code == 400
+        assert invalid.json() == {
+            "name": "Product name must have at least 2 characters"
+        }
+    blank = await client.post(url, json={**PRODUCT, "name": "  "}, headers=admin)
+    assert blank.status_code == 400

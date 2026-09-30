@@ -25,6 +25,7 @@ The Gradle wrapper downloads the required Gradle distribution and project depend
 | `make code-format` | Apply Spotless formatting and unused-import cleanup |
 | `make build` | Build and verify the application |
 | `make run-h2` | Run locally with the in-memory H2 profile |
+| `make seed` | Load the sample catalog into development MySQL |
 
 ## Run
 
@@ -52,7 +53,11 @@ Routes are rooted at `/api` and implement the paths, payloads, pagination, authe
 
 Sign in with `POST /api/auth/signin` using `{"username":"user","password":"userpass"}`. The response contains `jwtToken` and sets the HTTP-only `ecommerce-app` cookie for `/api`. Protected routes also accept `Authorization: Bearer <jwtToken>`; the cookie takes precedence when both credentials are present. Routes under `/api/admin/**` require `ROLE_ADMIN`.
 
-Development startup creates `user/userpass`, `seller/sellerpass`, and `admin/adminpass`. The JWT lifetime and cookie lifetime both default to 24 hours.
+Development startup creates `user/userpass`, `seller/sellerpass`, `seller2/seller2pass`, `seller3/seller3pass`, and `admin/adminpass`. The JWT lifetime and cookie lifetime both default to 24 hours.
+
+Run `make seed` to add 10 categories and 100 products to the default development MySQL database. The command exits after seeding and can be rerun safely. Existing categories and products with matching names are left unchanged. On a fresh database, products are split evenly between `seller2` and `seller3`.
+
+Start `make run` in another terminal after seeding, then start the storefront. The seed command does not leave an API server running. To confirm the data is available, open `http://localhost:8080/api/public/products` and check `totalElements`.
 
 ## Commands
 
@@ -63,6 +68,7 @@ make setup         # Resolve dependencies and compile classes
 make run           # Run with MySQL
 make run-h2        # Run with in-memory H2
 make run-postgres  # Run with PostgreSQL
+make seed          # Seed the development catalog in MySQL
 make test          # Run tests
 make build         # Build and verify
 ```

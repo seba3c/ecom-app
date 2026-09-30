@@ -8,7 +8,7 @@ from app.schemas.common import Money
 
 
 class ProductInput(APIModel):
-    name: str = Field(min_length=5)
+    name: str = Field(min_length=2)
     description: str = Field(min_length=1)
     quantity: int = Field(ge=0)
     price: Decimal = Field(ge=0)

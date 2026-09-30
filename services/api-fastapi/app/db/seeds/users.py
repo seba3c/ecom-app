@@ -7,6 +7,8 @@ from app.services.auth_service import hash_password
 SEED_USERS = (
     ("user", "user@ecommapp.com", "userpass", {"ROLE_USER"}),
     ("seller", "seller@ecommapp.com", "sellerpass", {"ROLE_SELLER"}),
+    ("seller2", "seller2@ecommapp.com", "seller2pass", {"ROLE_SELLER"}),
+    ("seller3", "seller3@ecommapp.com", "seller3pass", {"ROLE_SELLER"}),
     (
         "admin",
         "admin@ecommapp.com",

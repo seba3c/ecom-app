@@ -1,13 +1,31 @@
 # ecom-app
 
-Polyglot monorepo for two compatible ecommerce backend implementations, a future React frontend, and shared development utilities.
+Polyglot monorepo for two compatible ecommerce backend implementations, a React storefront, and shared development utilities.
+
+## Screenshots
+
+### Home
+
+![Storefront home page](pics/home.png)
+
+### Catalog
+
+![Storefront product catalog](pics/catalog.png)
+
+### Admin dashboard
+
+![Admin dashboard](pics/admin_dashboard.png)
+
+### Admin products
+
+![Admin product management](pics/admin_products.png)
 
 ## Repository layout
 
 ```text
 ecom-app/
 |-- apps/
-|   `-- web/                 # React frontend placeholder
+|   `-- web/                 # React storefront and admin studio
 |-- services/
 |   |-- api-spring/          # Java 21, Spring Boot 4, Gradle
 |   `-- api-fastapi/         # Python 3.12, FastAPI, uv
@@ -26,12 +44,15 @@ Run one backend implementation at a time:
 ```bash
 make dev-spring    # http://localhost:8080/api
 make dev-fastapi   # http://localhost:8000/api
+make seed-spring   # Load sample catalog into Spring Boot database
+make seed-fastapi  # Load sample catalog into FastAPI database
+make web           # http://localhost:5173
 make help          # list root commands
 ```
 
-Both commands run in the foreground and can be stopped with Ctrl-C. Each backend manages its own database setup as described in its service README.
+The two API server commands run in the foreground and can be stopped with Ctrl-C. Each backend manages its own database setup as described in its service README.
 
-The React application has not been scaffolded. For now, `make web` returns an explanatory error; the target will delegate to the frontend development server when the toolchain is introduced.
+Install frontend dependencies with `npm --prefix apps/web install`. To see the sample Spring catalog, run `make seed-spring` once, then keep `make dev-spring` running in one terminal while you run `make web` in another. The seed command exits after filling MySQL; it does not serve the API. Check `http://localhost:8080/api/public/products` if the storefront appears empty. The development proxy targets Spring Boot by default. To use FastAPI, run `API_PROXY_TARGET=http://localhost:8000 make web`. See [the web README](apps/web/README.md) for routes, checks, and deployment configuration.
 
 ## Backend commands
 
@@ -68,7 +89,7 @@ Both implementations expose routes below `/api`. The canonical shared paths,
 payloads, pagination, authentication, and authorization behavior are defined in
 [`contracts/openapi/openapi.yaml`](contracts/openapi/openapi.yaml).
 
-Local authentication uses the `ecommerce-app` HTTP-only JWT cookie. Development seed accounts are `user/userpass`, `seller/sellerpass`, and `admin/adminpass`.
+Local authentication uses the `ecommerce-app` HTTP-only JWT cookie. Development seed accounts are `user/userpass`, `seller/sellerpass`, `seller2/seller2pass`, `seller3/seller3pass`, and `admin/adminpass`. Each API's seed command loads the same 10 categories and 100 products from `tools/seed/catalog.json` into its own development database.
 
 ## Bruno collection
 

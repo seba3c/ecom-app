@@ -1,0 +1,854 @@
+{
+  "categories": [
+    {
+      "name": "Electronics",
+      "products": [
+        {
+          "name": "Wireless Headphones",
+          "description": "Wireless Headphones for everyday electronics use.",
+          "quantity": 10,
+          "price": "8.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Bluetooth Speaker",
+          "description": "Bluetooth Speaker for everyday electronics use.",
+          "quantity": 13,
+          "price": "12.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "USB-C Charger",
+          "description": "USB-C Charger for everyday electronics use.",
+          "quantity": 16,
+          "price": "16.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Portable Power Bank",
+          "description": "Portable Power Bank for everyday electronics use.",
+          "quantity": 19,
+          "price": "20.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Mechanical Keyboard",
+          "description": "Mechanical Keyboard for everyday electronics use.",
+          "quantity": 22,
+          "price": "24.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Wireless Mouse",
+          "description": "Wireless Mouse for everyday electronics use.",
+          "quantity": 25,
+          "price": "28.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Webcam HD",
+          "description": "Webcam HD for everyday electronics use.",
+          "quantity": 28,
+          "price": "32.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Smart Watch",
+          "description": "Smart Watch for everyday electronics use.",
+          "quantity": 31,
+          "price": "36.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Noise Cancelling Earbuds",
+          "description": "Noise Cancelling Earbuds for everyday electronics use.",
+          "quantity": 34,
+          "price": "40.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "LED Desk Monitor",
+          "description": "LED Desk Monitor for everyday electronics use.",
+          "quantity": 37,
+          "price": "44.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Clothing",
+      "products": [
+        {
+          "name": "Cotton Crew T-Shirt",
+          "description": "Cotton Crew T-Shirt for everyday clothing use.",
+          "quantity": 17,
+          "price": "13.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Denim Jacket",
+          "description": "Denim Jacket for everyday clothing use.",
+          "quantity": 20,
+          "price": "17.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Linen Shirt",
+          "description": "Linen Shirt for everyday clothing use.",
+          "quantity": 23,
+          "price": "21.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Wool Sweater",
+          "description": "Wool Sweater for everyday clothing use.",
+          "quantity": 26,
+          "price": "25.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Classic Jeans",
+          "description": "Classic Jeans for everyday clothing use.",
+          "quantity": 29,
+          "price": "29.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Rain Jacket",
+          "description": "Rain Jacket for everyday clothing use.",
+          "quantity": 32,
+          "price": "33.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Running Shorts",
+          "description": "Running Shorts for everyday clothing use.",
+          "quantity": 35,
+          "price": "37.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Knit Cardigan",
+          "description": "Knit Cardigan for everyday clothing use.",
+          "quantity": 38,
+          "price": "41.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Canvas Sneakers",
+          "description": "Canvas Sneakers for everyday clothing use.",
+          "quantity": 41,
+          "price": "45.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Fleece Hoodie",
+          "description": "Fleece Hoodie for everyday clothing use.",
+          "quantity": 44,
+          "price": "49.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Home",
+      "products": [
+        {
+          "name": "Cotton Throw Blanket",
+          "description": "Cotton Throw Blanket for everyday home use.",
+          "quantity": 24,
+          "price": "18.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Ceramic Table Lamp",
+          "description": "Ceramic Table Lamp for everyday home use.",
+          "quantity": 27,
+          "price": "22.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Wall Clock",
+          "description": "Wall Clock for everyday home use.",
+          "quantity": 30,
+          "price": "26.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Storage Basket",
+          "description": "Storage Basket for everyday home use.",
+          "quantity": 33,
+          "price": "30.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Bedside Organizer",
+          "description": "Bedside Organizer for everyday home use.",
+          "quantity": 36,
+          "price": "34.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Scented Candle",
+          "description": "Scented Candle for everyday home use.",
+          "quantity": 39,
+          "price": "38.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Picture Frame Set",
+          "description": "Picture Frame Set for everyday home use.",
+          "quantity": 42,
+          "price": "42.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Cushion Cover Pair",
+          "description": "Cushion Cover Pair for everyday home use.",
+          "quantity": 45,
+          "price": "46.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Entryway Doormat",
+          "description": "Entryway Doormat for everyday home use.",
+          "quantity": 48,
+          "price": "50.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Laundry Hamper",
+          "description": "Laundry Hamper for everyday home use.",
+          "quantity": 51,
+          "price": "54.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Kitchen",
+      "products": [
+        {
+          "name": "Stainless Steel Pan",
+          "description": "Stainless Steel Pan for everyday kitchen use.",
+          "quantity": 31,
+          "price": "23.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Chef Knife",
+          "description": "Chef Knife for everyday kitchen use.",
+          "quantity": 34,
+          "price": "27.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Bamboo Cutting Board",
+          "description": "Bamboo Cutting Board for everyday kitchen use.",
+          "quantity": 37,
+          "price": "31.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Glass Food Containers",
+          "description": "Glass Food Containers for everyday kitchen use.",
+          "quantity": 40,
+          "price": "35.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Electric Kettle",
+          "description": "Electric Kettle for everyday kitchen use.",
+          "quantity": 43,
+          "price": "39.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Ceramic Mixing Bowls",
+          "description": "Ceramic Mixing Bowls for everyday kitchen use.",
+          "quantity": 46,
+          "price": "43.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Silicone Spatula Set",
+          "description": "Silicone Spatula Set for everyday kitchen use.",
+          "quantity": 49,
+          "price": "47.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "French Press",
+          "description": "French Press for everyday kitchen use.",
+          "quantity": 52,
+          "price": "51.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Measuring Cup Set",
+          "description": "Measuring Cup Set for everyday kitchen use.",
+          "quantity": 55,
+          "price": "55.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Toaster Oven",
+          "description": "Toaster Oven for everyday kitchen use.",
+          "quantity": 58,
+          "price": "59.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Sports",
+      "products": [
+        {
+          "name": "Yoga Mat",
+          "description": "Yoga Mat for everyday sports use.",
+          "quantity": 38,
+          "price": "28.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Resistance Band Set",
+          "description": "Resistance Band Set for everyday sports use.",
+          "quantity": 41,
+          "price": "32.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Adjustable Dumbbells",
+          "description": "Adjustable Dumbbells for everyday sports use.",
+          "quantity": 44,
+          "price": "36.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Running Belt",
+          "description": "Running Belt for everyday sports use.",
+          "quantity": 47,
+          "price": "40.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Cycling Gloves",
+          "description": "Cycling Gloves for everyday sports use.",
+          "quantity": 50,
+          "price": "44.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Foam Roller",
+          "description": "Foam Roller for everyday sports use.",
+          "quantity": 53,
+          "price": "48.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Jump Rope",
+          "description": "Jump Rope for everyday sports use.",
+          "quantity": 56,
+          "price": "52.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Water Bottle",
+          "description": "Water Bottle for everyday sports use.",
+          "quantity": 59,
+          "price": "56.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Training Cones",
+          "description": "Training Cones for everyday sports use.",
+          "quantity": 62,
+          "price": "60.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Tennis Racket",
+          "description": "Tennis Racket for everyday sports use.",
+          "quantity": 65,
+          "price": "64.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Beauty",
+      "products": [
+        {
+          "name": "Daily Face Cleanser",
+          "description": "Daily Face Cleanser for everyday beauty use.",
+          "quantity": 45,
+          "price": "33.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Moisturizing Lotion",
+          "description": "Moisturizing Lotion for everyday beauty use.",
+          "quantity": 48,
+          "price": "37.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Mineral Sunscreen",
+          "description": "Mineral Sunscreen for everyday beauty use.",
+          "quantity": 51,
+          "price": "41.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Lip Balm Set",
+          "description": "Lip Balm Set for everyday beauty use.",
+          "quantity": 54,
+          "price": "45.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Hair Conditioner",
+          "description": "Hair Conditioner for everyday beauty use.",
+          "quantity": 57,
+          "price": "49.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Body Wash",
+          "description": "Body Wash for everyday beauty use.",
+          "quantity": 60,
+          "price": "53.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Makeup Brush Kit",
+          "description": "Makeup Brush Kit for everyday beauty use.",
+          "quantity": 63,
+          "price": "57.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Hand Cream",
+          "description": "Hand Cream for everyday beauty use.",
+          "quantity": 66,
+          "price": "61.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Face Serum",
+          "description": "Face Serum for everyday beauty use.",
+          "quantity": 69,
+          "price": "65.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Shampoo Bar",
+          "description": "Shampoo Bar for everyday beauty use.",
+          "quantity": 72,
+          "price": "69.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "products": [
+        {
+          "name": "The Urban Garden Guide",
+          "description": "The Urban Garden Guide for everyday books use.",
+          "quantity": 52,
+          "price": "38.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Everyday Bread Baking",
+          "description": "Everyday Bread Baking for everyday books use.",
+          "quantity": 55,
+          "price": "42.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Beginner Astronomy Atlas",
+          "description": "Beginner Astronomy Atlas for everyday books use.",
+          "quantity": 58,
+          "price": "46.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Modern Home Cooking",
+          "description": "Modern Home Cooking for everyday books use.",
+          "quantity": 61,
+          "price": "50.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "The Trail Companion",
+          "description": "The Trail Companion for everyday books use.",
+          "quantity": 64,
+          "price": "54.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Creative Writing Prompts",
+          "description": "Creative Writing Prompts for everyday books use.",
+          "quantity": 67,
+          "price": "58.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "World History Essentials",
+          "description": "World History Essentials for everyday books use.",
+          "quantity": 70,
+          "price": "62.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Birdwatching Handbook",
+          "description": "Birdwatching Handbook for everyday books use.",
+          "quantity": 73,
+          "price": "66.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Practical Photography",
+          "description": "Practical Photography for everyday books use.",
+          "quantity": 76,
+          "price": "70.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "The Puzzle Collection",
+          "description": "The Puzzle Collection for everyday books use.",
+          "quantity": 79,
+          "price": "74.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Toys",
+      "products": [
+        {
+          "name": "Wooden Building Blocks",
+          "description": "Wooden Building Blocks for everyday toys use.",
+          "quantity": 59,
+          "price": "43.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Remote Control Car",
+          "description": "Remote Control Car for everyday toys use.",
+          "quantity": 62,
+          "price": "47.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Jigsaw Puzzle 500 Pieces",
+          "description": "Jigsaw Puzzle 500 Pieces for everyday toys use.",
+          "quantity": 65,
+          "price": "51.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Plush Bear",
+          "description": "Plush Bear for everyday toys use.",
+          "quantity": 68,
+          "price": "55.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Art Supply Kit",
+          "description": "Art Supply Kit for everyday toys use.",
+          "quantity": 71,
+          "price": "59.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Magnetic Tile Set",
+          "description": "Magnetic Tile Set for everyday toys use.",
+          "quantity": 74,
+          "price": "63.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Board Game Adventure",
+          "description": "Board Game Adventure for everyday toys use.",
+          "quantity": 77,
+          "price": "67.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Toy Train Set",
+          "description": "Toy Train Set for everyday toys use.",
+          "quantity": 80,
+          "price": "71.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Science Experiment Kit",
+          "description": "Science Experiment Kit for everyday toys use.",
+          "quantity": 83,
+          "price": "75.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Outdoor Bubble Wand",
+          "description": "Outdoor Bubble Wand for everyday toys use.",
+          "quantity": 86,
+          "price": "79.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Garden",
+      "products": [
+        {
+          "name": "Pruning Shears",
+          "description": "Pruning Shears for everyday garden use.",
+          "quantity": 66,
+          "price": "48.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Garden Trowel",
+          "description": "Garden Trowel for everyday garden use.",
+          "quantity": 69,
+          "price": "52.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Watering Can",
+          "description": "Watering Can for everyday garden use.",
+          "quantity": 72,
+          "price": "56.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Seed Starter Tray",
+          "description": "Seed Starter Tray for everyday garden use.",
+          "quantity": 75,
+          "price": "60.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Plant Pot Set",
+          "description": "Plant Pot Set for everyday garden use.",
+          "quantity": 78,
+          "price": "64.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Garden Gloves",
+          "description": "Garden Gloves for everyday garden use.",
+          "quantity": 81,
+          "price": "68.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Hose Nozzle",
+          "description": "Hose Nozzle for everyday garden use.",
+          "quantity": 84,
+          "price": "72.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Compost Bin",
+          "description": "Compost Bin for everyday garden use.",
+          "quantity": 87,
+          "price": "76.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Solar Path Lights",
+          "description": "Solar Path Lights for everyday garden use.",
+          "quantity": 90,
+          "price": "80.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Herb Seed Collection",
+          "description": "Herb Seed Collection for everyday garden use.",
+          "quantity": 93,
+          "price": "84.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    },
+    {
+      "name": "Pets",
+      "products": [
+        {
+          "name": "Dog Leash",
+          "description": "Dog Leash for everyday pets use.",
+          "quantity": 73,
+          "price": "53.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Cat Scratching Post",
+          "description": "Cat Scratching Post for everyday pets use.",
+          "quantity": 76,
+          "price": "57.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Pet Food Bowl",
+          "description": "Pet Food Bowl for everyday pets use.",
+          "quantity": 79,
+          "price": "61.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Dog Chew Toy",
+          "description": "Dog Chew Toy for everyday pets use.",
+          "quantity": 82,
+          "price": "65.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Cat Tunnel",
+          "description": "Cat Tunnel for everyday pets use.",
+          "quantity": 85,
+          "price": "69.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Pet Grooming Brush",
+          "description": "Pet Grooming Brush for everyday pets use.",
+          "quantity": 88,
+          "price": "73.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Bird Feeder",
+          "description": "Bird Feeder for everyday pets use.",
+          "quantity": 91,
+          "price": "77.99",
+          "discount": "4.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Aquarium Gravel",
+          "description": "Aquarium Gravel for everyday pets use.",
+          "quantity": 94,
+          "price": "81.99",
+          "discount": "6.00",
+          "seller": "seller3"
+        },
+        {
+          "name": "Travel Pet Carrier",
+          "description": "Travel Pet Carrier for everyday pets use.",
+          "quantity": 97,
+          "price": "85.99",
+          "discount": "0.00",
+          "seller": "seller2"
+        },
+        {
+          "name": "Puppy Training Pads",
+          "description": "Puppy Training Pads for everyday pets use.",
+          "quantity": 100,
+          "price": "89.99",
+          "discount": "2.00",
+          "seller": "seller3"
+        }
+      ]
+    }
+  ]
+}

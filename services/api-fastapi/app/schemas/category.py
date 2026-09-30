@@ -7,16 +7,16 @@ from app.schemas.base import APIModel, BaseModel
 
 
 class CategoryCreate(BaseModel):
-    name: str = Field(..., min_length=1, max_length=255)
+    name: str = Field(..., min_length=2, max_length=255)
 
 
 class CategoryUpdate(BaseModel):
-    name: str | None = Field(None, min_length=1, max_length=255)
+    name: str | None = Field(None, min_length=2, max_length=255)
 
 
 class Category(BaseModel):
     id: int
-    name: str = Field(..., min_length=1, max_length=255)
+    name: str = Field(..., min_length=2, max_length=255)
     created_at: datetime
     updated_at: datetime
 
@@ -29,7 +29,7 @@ CategoryStream = AsyncIterable[Category]
 
 
 class CategoryInput(APIModel):
-    name: str = Field(min_length=5)
+    name: str = Field(min_length=2)
 
     @field_validator("name")
     @classmethod

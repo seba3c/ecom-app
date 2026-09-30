@@ -2,13 +2,13 @@
 
 ## Project purpose
 
-This polyglot monorepo contains two compatible ecommerce APIs, a future React frontend, and shared development utilities:
+This polyglot monorepo contains two compatible ecommerce APIs, a React storefront, and shared development utilities:
 
 | Project | Path | Stack | Local API base URL |
 | --- | --- | --- | --- |
 | Spring Boot API | `services/api-spring` | Java 21, Spring Boot 4, Gradle | `http://localhost:8080/api` |
 | FastAPI API | `services/api-fastapi` | Python 3.12, FastAPI, uv | `http://localhost:8000/api` |
-| React frontend | `apps/web` | Not scaffolded | N/A |
+| React frontend | `apps/web` | React, TypeScript, Vite | `http://localhost:5173` |
 
 Read a service's own `AGENTS.md` and `README.md` before modifying it. Treat the Spring API's paths, payloads, pagination, authentication, and authorization behavior as the shared client contract until the canonical OpenAPI document is introduced under `contracts/openapi`.
 
@@ -21,7 +21,7 @@ make dev-fastapi
 make web
 ```
 
-The backend targets run in the foreground. `make web` intentionally fails with an explanatory message until the React application is scaffolded.
+The backend and frontend targets run in the foreground. Install frontend dependencies with `npm --prefix apps/web install` before `make web`; set `API_PROXY_TARGET=http://localhost:8000` to use FastAPI instead of Spring Boot.
 
 ## API integration
 

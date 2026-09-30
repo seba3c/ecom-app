@@ -79,6 +79,37 @@ class ProductControllerTest {
     }
 
     @Test
+    void productNameAcceptsTwoCharactersAndRejectsOne() throws Exception {
+        when(productService.createProduct(eq(1L), any(ProductCreateRequest.class)))
+                .thenReturn(sampleProduct());
+        when(productService.updateProduct(eq(1L), any(ProductUpdateRequest.class)))
+                .thenReturn(sampleProduct());
+
+        String valid = "{\"name\":\"TV\",\"description\":\"Television\",\"quantity\":1,\"price\":10,\"discount\":0}";
+        String invalid = valid.replace("\"TV\"", "\"T\"");
+        mockMvc.perform(post("/api/admin/categories/1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(valid))
+                .andExpect(status().isCreated());
+        mockMvc.perform(put("/api/admin/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(valid))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/api/admin/categories/1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalid))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(put("/api/admin/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalid))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/api/admin/categories/1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(valid.replace("\"TV\"", "\"  \"")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void createProduct_categoryNotFound_returns404() throws Exception {
         when(productService.createProduct(eq(99L), any(ProductCreateRequest.class)))
                 .thenThrow(new ResourceNotFoundException("Category", "id", 99L));

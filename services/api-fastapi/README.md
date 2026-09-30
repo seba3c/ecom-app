@@ -52,7 +52,9 @@ Routes are rooted at `/api` and implement the paths, payloads, pagination, authe
 
 Sign in with `POST /api/auth/signin` using `{"username":"user","password":"userpass"}`. The response contains `jwtToken` and sets the HTTP-only `ecommerce-app` cookie for `/api`. Protected routes also accept `Authorization: Bearer <jwtToken>`; the cookie takes precedence when both credentials are present. Routes under `/api/admin/**` require `ROLE_ADMIN`.
 
-Development startup creates `user/userpass`, `seller/sellerpass`, and `admin/adminpass`. Set `JWT_SECRET` to a strong private value before production startup; the development default is rejected in production. `JWT_EXPIRATION_SECONDS` defaults to `86400`.
+Development startup creates `user/userpass`, `seller/sellerpass`, `seller2/seller2pass`, `seller3/seller3pass`, and `admin/adminpass`. Set `JWT_SECRET` to a strong private value before production startup; the development default is rejected in production. `JWT_EXPIRATION_SECONDS` defaults to `86400`.
+
+Run `make seed` to add 10 categories and 100 products to the development MySQL database. The command can be rerun safely; existing categories and products with matching names are left unchanged. On a fresh database, products are split evenly between `seller2` and `seller3`.
 
 ## Commands
 
@@ -65,8 +67,16 @@ make db-down           # Stop the database and preserve its volume
 make db-reset          # Stop the database and delete its volume
 make migrate           # Apply all Alembic migrations
 make migrate-rollback  # Roll back the latest migration
-make seed              # Seed the default categories
+make seed              # Seed the development catalog
 ```
+
+Alembic autogeneration compares the models with the database named by `DATABASE_URL`.
+To regenerate a baseline migration, point `DATABASE_URL` at an empty database;
+running `alembic revision --autogenerate` against an already migrated database
+produces an empty revision. The current single baseline is intended for a fresh
+database. An existing database stamped with the removed migration IDs must be
+reconciled before `make migrate` can use this baseline; recreate a disposable
+development database with `make db-reset` only if its data can be discarded.
 
 ### Development and quality
 

@@ -87,6 +87,35 @@ class CategoryControllerTest {
     }
 
     @Test
+    void categoryNameAcceptsTwoCharactersAndRejectsOne() throws Exception {
+        when(categoryService.createCategory(any(CategoryCreateRequest.class)))
+                .thenReturn(new CategoryDetailResponse(1L, "TV"));
+        when(categoryService.updateCategory(eq(1L), any(CategoryUpdateRequest.class)))
+                .thenReturn(new CategoryDetailResponse(1L, "PC"));
+
+        mockMvc.perform(post("/api/admin/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"TV\"}"))
+                .andExpect(status().isCreated());
+        mockMvc.perform(put("/api/admin/categories/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"PC\"}"))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/api/admin/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"T\"}"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(put("/api/admin/categories/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"P\"}"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(post("/api/admin/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"  \"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void createCategory_duplicate_returns400() throws Exception {
         when(categoryService.createCategory(any(CategoryCreateRequest.class)))
                 .thenThrow(new APIException("Category with the name Electronics already exists"));

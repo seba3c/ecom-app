@@ -10,6 +10,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.category import Category
+    from app.models.user import User
 
 
 class Product(Base):
@@ -25,3 +26,5 @@ class Product(Base):
         ForeignKey("categories.id"), nullable=False
     )
     category: Mapped[Category] = relationship(lazy="selectin")
+    seller_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    seller: Mapped[User | None] = relationship(lazy="selectin")

@@ -20,7 +20,7 @@ public class Product extends Auditable {
     private Long id;
 
     @NotBlank(message = "Product name must not be blank")
-    @Size(min = 5, message = "Product name must have at least 5 characters")
+    @Size(min = 2, message = "Product name must have at least 2 characters")
     @Column(unique = true)
     private String name;
 

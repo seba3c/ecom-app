@@ -61,9 +61,9 @@ async def test_category_errors_and_access(client):
         )
     ).status_code == 403
     headers = admin_headers()
-    invalid = await client.post(ADMIN, json={"name": "bad"}, headers=headers)
+    invalid = await client.post(ADMIN, json={"name": "b"}, headers=headers)
     assert invalid.status_code == 400
-    assert invalid.json() == {"name": "Category name must have at least 5 characters"}
+    assert invalid.json() == {"name": "Category name must have at least 2 characters"}
     first = await client.post(ADMIN, json={"name": "Electronics"}, headers=headers)
     duplicate = await client.post(ADMIN, json={"name": "Electronics"}, headers=headers)
     assert duplicate.status_code == 400
@@ -74,6 +74,26 @@ async def test_category_errors_and_access(client):
     assert missing.status_code == 404
     assert missing.json() == {"message": "Category with id: 999 not found"}
     assert first.status_code == 201
+
+
+@pytest.mark.anyio
+async def test_category_name_two_character_boundary(client):
+    headers = admin_headers()
+    created = await client.post(ADMIN, json={"name": "TV"}, headers=headers)
+    assert created.status_code == 201
+    updated = await client.put(
+        f"{ADMIN}/{created.json()['id']}", json={"name": "PC"}, headers=headers
+    )
+    assert updated.status_code == 200
+    invalid_update = await client.put(
+        f"{ADMIN}/{created.json()['id']}", json={"name": "P"}, headers=headers
+    )
+    assert invalid_update.status_code == 400
+    assert invalid_update.json() == {
+        "name": "Category name must have at least 2 characters"
+    }
+    blank = await client.post(ADMIN, json={"name": "  "}, headers=headers)
+    assert blank.status_code == 400
 
 
 @pytest.mark.anyio

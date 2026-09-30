@@ -1,4 +1,4 @@
-.PHONY: setup run run-h2 run-postgres test build code-format
+.PHONY: setup run run-h2 run-postgres seed test build code-format
 
 # Resolve dependencies and compile application classes
 setup:
@@ -6,7 +6,7 @@ setup:
 
 # Run with the default MySQL profile
 run:
-	./gradlew bootRun
+	SPRING_PROFILES_ACTIVE=mysql ./gradlew bootRun
 
 # Run with the in-memory H2 profile
 run-h2:
@@ -15,6 +15,10 @@ run-h2:
 # Run with the PostgreSQL profile
 run-postgres:
 	SPRING_PROFILES_ACTIVE=postgres ./gradlew bootRun
+
+# Load the development sample catalog into the default MySQL database
+seed:
+	SPRING_PROFILES_ACTIVE=mysql ./gradlew bootRun --args='--app.seed-catalog=true --spring.main.web-application-type=none'
 
 # Run the complete test suite
 test:

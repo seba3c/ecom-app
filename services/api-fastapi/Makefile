@@ -56,9 +56,9 @@ pre-commit-install:
 pre-commit-run:
 	uv run pre-commit run --all-files
 
-# Seed default categories into the dev DB
-seed: db-up migrate
-	PYTHONPATH=. uv run python app/db/seeds/categories.py
+# Seed the shared development catalog into the dev DB
+seed: migrate
+	PYTHONPATH=. uv run python app/db/seeds/catalog.py
 
 # Build and start the API container via Docker Compose
 docker-run:
