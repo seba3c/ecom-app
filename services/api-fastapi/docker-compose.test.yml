@@ -1,0 +1,11 @@
+services:
+  db:
+    environment:
+      MYSQL_DATABASE: fa_ecom_test
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_test_data:/var/lib/mysql
+
+volumes:
+  db_test_data:
