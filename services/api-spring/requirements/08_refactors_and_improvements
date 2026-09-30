@@ -1,0 +1,6 @@
+* Remove AuthUtils from CartServiceImpl and move it to Controller layer, all methods in CartServiceImpl
+should receive the user id as a parameter.
+* Add a method in CartService to clear a given user's cart by id, and use it in OrderServiceImpl.placeOrder() method
+to clear the user's cart after placing the order
+* Make sure AuthUtils is only used at Controller layer and pass the user id to any service that needs it
+* Verify unittests are ok or fix them after refactoring

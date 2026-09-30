@@ -1,0 +1,92 @@
+Implementation details for orders and payments:
+
+Models:
+
++ Order (Auditable) table = orders
+    * id
+    * user many-to-one relation with User - user posting the order
+    * items one-to-many relation with OrderItem - order items
+    * orderDate - order date
+    * totalAmount
+    * status (pending, in_progress, shipped, delivered, completed, cancelled) - order are placed in pending status
+    * shipping address many-to-one relation with Address
+    * payment one-to-one relation with Payment
+
++ OrderItem (Auditable) table = order_items
+    * id
+    * order many-to-one relation with Order - related order for this item
+    * product many-to-one relation with Product - related product for this item
+    * quantity (min=1)
+    * price
+    * discount
+
++ Payment (Auditable) table = payments
+    * id
+    * one-to-one relation with order - related order for this payment
+    * method (string, minlength=4) - payment method (card, paypal, etc)
+    * pgPaymentId: string - payment gateway id
+    * pgStatus: string - payment gateway status
+    * pgResponse: string - payment gateway response
+    * pgName string - payment gateway name
+
+Controllers:
++ OrderController
+    * POST 201 /api/orders (request body = OrderCreateRequest, response OrderDetailResponse)
+    Sample request
+    {
+      "addressId": 1,
+      "paymentMethod": "card",
+      "pgName": "Stripe",
+      "pgPaymentId": "pi_1FHEhK2eZvKYlo2CcK4UJNdW",
+      "pgStatus": "succeeded",
+      "pgResponseMessage": "Payment successful"
+    }
+    it calls OrderService.placeOrder(...)
+
+Services:
++ OrderService
+    * placeOrder(email, addressId, paymentMethod, pgName, pgPaymentId, pgStatus, pgResponse)
+    This method will do the following actions:
+    1. get user cart and address
+    2. create a new order with payment info (define a constructor in Payment entity for: paymentMethod, pgName, pgPaymentId, pgStatus, pgResponse)
+    3. get items from cart and create the order items
+    4. update product stocks
+    5. clear the cart
+    6. return the order details
+
+DTOs:
+* OrderCreateRequest - used for creating a new order
+  + addressId
+  + paymentMethod
+  + pgName
+  + pgPaymentId
+  + pgStatus
+  + pgResponse
+* OrderDetailResponse - order details returned after placing a new order
+  + id
+  + email - expose only user email
+  + items - list of OrderItemDetail DTO
+  + orderDate
+  + totalAmount
+  + status
+  + shippingAddress - address Id
+  + payment - PaymentDetail DTO
+
+Repositories:
+* OrderRepository
+* OrderItemRepository
+* PaymentRepository
+
+Test:
+Define test for controller and service layers
+
+
+
+
+
+
+
+
+
+
+

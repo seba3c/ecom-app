@@ -1,0 +1,20 @@
+Implement the API to manage addresses, including:
+
+* DTOs
+* Repository
+* Service
+* Controller
+* Unit tests
+
+API endpoints:
+
+* GET /addresses 200 - List all addresses
+* GET /addresses/:id 200 - Get address by id
+* POST /addresses 201 - Create address
+* PUT /addresses/:id 200 - Update address
+* DELETE /addresses/:id 204 - Delete address
+
+General guidelines:
+* Use AuthUtils to get the logged in user
+* Use existing implementations as reference for naming and organization conventions
+

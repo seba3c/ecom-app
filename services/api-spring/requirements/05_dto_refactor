@@ -1,0 +1,38 @@
+Refactor DTOs with the following rules:
+
+Addresses
+* For list responses, rename AddressResponse to AddressListResponse
+* For detail responses, rename AddressDTO to AddressDetailResponse
+* For create requests, create a new AddressCreateRequest DTO class, add validation rules based on the Address entity
+* For update requests, create a new AddressUpdateRequest DTO class, add validation rules based on the Address entity
+
+Cart
+* For list responses, rename CartResponse to CartListResponse
+* For detail responses, rename CartDTO to CartDetailResponse
+* For cart item representation (not returned directly), rename CartItemDTO to CartItemDetail
+
+Products
+* For list responses, rename ProductResponse to ProductListResponse
+* For detail responses, rename ProductDTO to ProductDetailResponse
+* For create requests, create a new ProductCreateRequest DTO class, add validation rules based on the Product entity
+* For update requests, create a new ProductUpdateRequest DTO class, add validation rules based on the Product entity
+
+Categories
+* For list responses, rename CategoryResponse to CategoryListResponse
+* For detail responses, rename CategoryDTO to CategoryDetailResponse
+* For create requests, create a new CategoryCreateRequest DTO class, add validation rules based on the Category entity
+* For update requests, create a new CategoryUpdateRequest DTO class, add validation rules based on the Category entity
+
+Naming convention: <Entity><Action>Request/Response
+* Requests: <Entity>CreateRequest, <Entity>UpdateRequest
+* List responses: <Entity>ListResponse
+* Detail responses: <Entity>DetailResponse
+* Internal/embedded DTOs: <Entity><Role> (e.g. CartItemDetail)
+
+Goals:
+* Improve security without the need of providing ids for create and update requests
+* Improve readability and maintainability
+* Separation of concerns: entity representation, requests and responses
+
+Test:
+* Fix unit tests according to the new rules

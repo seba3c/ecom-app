@@ -1,0 +1,9 @@
+#!/bin/sh
+# Fail the commit if any Java source files are not formatted correctly.
+echo "Running Spotless format check..."
+./gradlew spotlessCheck --quiet
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Spotless check failed. Run './gradlew spotlessApply' to fix formatting, then re-stage and commit."
+  exit 1
+fi

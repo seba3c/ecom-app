@@ -1,0 +1,47 @@
+Implement a shopping cart, including:
+
+* Models
+* DTOs
+* Repositories
+* Services
+* Unit tests
+
+API endpoints:
+
+These are the endpoints used by normal users to interact with their shopping cart
+POST: /api/my_cart/{product_id}/quantity/{quantity} -> Add a product to the user cart
+PUT: /api/my_cart/{product_id}/quantity/{quantity} -> Update a product quantity in the user cart
+DELETE: /api/my_cart/{product_id} -> Remove a product from the user cart
+GET: /api/my_cart/ -> Get user cart
+
+These endpoints are for admin use:
+GET /api/admin/carts -> Get the list of all existing carts
+
+Utilities
+* Implement a class AuthUtils with 2 methods:
+-- loggedInEmail() -> returns logged in user email or raise an exception otherwise
+-- loggedInUsedId() -> returns logged in user id or raise an exception otherwise
+-- loggedInUser() -> returns logged in user or raise an exception otherwise
+
+This class will be use by related services to get the logged in user while implementing the cart functionality
+
+Models:
+
+Cart (table = carts)
+* A user has only 1 cart (relation must be bidirectional)
+* A cart can include 0 or more cart items
+* A cart has totalPrice, which is the sum of all item prices
+
+CartItem (table = cart_items)
+* A cart item is associated with one product (one-to-many) (bidirectional)
+* An item can have a discount and the price of the product
+* An item has the quantity of products to be purchased
+
+DTOs:
+
+* CartDTO
+* CartItemDTO
+
+Other guidelines:
+* Use existing entities as reference for naming conventions and project organization
+* Use non primitive types for currency and quantity attributes

@@ -1,0 +1,30 @@
+Define a new entity "Product" with the following attributes:
+
+1. name -> string, unique, min_length=5
+2. description -> string, required
+3. quantity -> int, required, default=0
+4. price -> float
+5. discount -> float
+
+A Product has a category associated and and Category has many Products.
+
+Define all layers including:
+* Controller
+* Repository
+* Service
+* DTO (ProductDTO, ProductResponse)
+* model
+
+ProductController must implement the following endpoints
+
+* POST /api/admin/categories/{category_id}/products -> Create a new product under a category
+* PUT /api/admin/products/{product_id} -> Update a product
+* DELETE /api/admin/products/{product_id} -> Delete a product
+* GET /api/public/products -> List all products (implement pagination)
+* GET /api/public/products/{product_id} -> Get a product by id
+* GET /api/public/products/keyword/{keyword} -> List all product by keyword searching over name and description (implement pagination)
+* GET /api/public/categories/{category_id}/products -> List all products under a category (implement pagination)
+
+Use existing Category implementation as reference for general guidelines.
+
+Write unitests to cover new controller and service implementations.
