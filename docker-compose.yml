@@ -39,6 +39,7 @@ services:
       target: test
     environment:
       - DATABASE_URL=mysql+aiomysql://fa_ecom_user:fa_ecom_pass@db:3306/fa_ecom_test
+      - TEST_DATABASE_URL=mysql+aiomysql://fa_ecom_user:fa_ecom_pass@db:3306/fa_ecom_test
     depends_on:
       db:
         condition: service_healthy

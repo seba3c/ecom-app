@@ -10,11 +10,18 @@ from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging
 from app.core.middleware import register_middleware
 from app.db.session import create_async_engine_instance, create_async_session_maker
+from app.db.seeds.users import seed_users
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
+    if (
+        settings.environment == "production"
+        and settings.jwt_secret
+        == "development-only-secret-change-in-production-0123456789abcdef"
+    ):
+        raise RuntimeError("JWT_SECRET must be configured in production")
     configure_logging(settings)
     logger = logging.getLogger(__name__)
 
@@ -30,6 +37,10 @@ async def lifespan(app: FastAPI):
 
     app.state.engine = engine
     app.state.session_maker = session_maker
+
+    if settings.environment == "development":
+        async with session_maker() as session:
+            await seed_users(session)
 
     yield
 

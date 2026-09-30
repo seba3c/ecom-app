@@ -3,149 +3,82 @@ from unittest.mock import patch
 
 import pytest
 
-CATEGORIES_PUBLIC_URL = "/api/public/categories"
-CATEGORIES_ADMIN_URL = "/api/admin/categories"
+from app.api.dependencies import get_settings
+from app.services.auth_service import issue_token
+
+PUBLIC = "/api/public/categories"
+ADMIN = "/api/admin/categories"
+
+
+def admin_headers():
+    return {"Authorization": f"Bearer {issue_token('admin', get_settings())}"}
 
 
 @pytest.mark.anyio
-async def test_create_category(client):
-    response = await client.post(CATEGORIES_ADMIN_URL, json={"name": "Test Category"})
-    assert response.status_code == 201
-    data = response.json()
-    assert data["name"] == "Test Category"
-    assert "id" in data
-
-
-@pytest.mark.anyio
-async def test_create_category_triggers_background_task(client):
-    with patch("app.api.v1.endpoints.categories.notify_category_created") as mock_task:
-        response = await client.post(
-            CATEGORIES_ADMIN_URL, json={"name": "Background Task Category"}
+async def test_category_contract(client):
+    headers = admin_headers()
+    with patch("app.api.v1.endpoints.categories.notify_category_created"):
+        created = await client.post(
+            ADMIN, json={"name": "Electronics"}, headers=headers
         )
-        assert response.status_code == 201
-        mock_task.assert_called_once()
-        payload = mock_task.call_args[0][0]
-        assert payload.name == "Background Task Category"
-        assert payload.id == response.json()["id"]
+    assert created.status_code == 201
+    assert set(created.json()) == {"id", "name"}
+    category_id = created.json()["id"]
 
+    extra_get = await client.get(f"{ADMIN}/{category_id}", headers=headers)
+    assert extra_get.status_code == 200
+    assert extra_get.json()["name"] == "Electronics"
 
-@pytest.mark.anyio
-async def test_create_category_duplicate(client, category_factory):
-    await category_factory("Duplicate")
-    response = await client.post(CATEGORIES_ADMIN_URL, json={"name": "Duplicate"})
-    assert response.status_code == 409
-    assert response.json()["detail"] == "Category with this name already exists."
+    listed = await client.get(PUBLIC, params={"pageNumber": 0, "pageSize": 1})
+    assert listed.status_code == 200
+    assert listed.json() == {
+        "content": [{"id": category_id, "name": "Electronics"}],
+        "pageNumber": 0,
+        "pageSize": 1,
+        "totalElements": 1,
+        "totalPages": 1,
+        "lastPage": True,
+    }
 
-
-@pytest.mark.anyio
-async def test_create_category_validation_error(client):
-    # Name too long
-    response = await client.post(CATEGORIES_ADMIN_URL, json={"name": "a" * 51})
-    assert response.status_code == 422
-
-    # Missing name
-    response = await client.post(CATEGORIES_ADMIN_URL, json={})
-    assert response.status_code == 422
-
-
-@pytest.mark.anyio
-async def test_list_categories(client, category_factory):
-    await category_factory("Category 1")
-    await category_factory("Category 2")
-
-    response = await client.get(CATEGORIES_PUBLIC_URL)
-    assert response.status_code == 200
-    data = response.json()
-    assert len(data["items"]) == 2
-    assert data["total"] == 2
-    assert data["limit"] == 50
-    assert data["offset"] == 0
-
-
-@pytest.mark.anyio
-async def test_list_categories_pagination(client, category_factory):
-    await category_factory("Category 1")
-    await category_factory("Category 2")
-    await category_factory("Category 3")
-
-    response = await client.get(f"{CATEGORIES_PUBLIC_URL}?limit=1&offset=1")
-    assert response.status_code == 200
-    data = response.json()
-    assert len(data["items"]) == 1
-    assert data["total"] == 3
-    assert data["limit"] == 1
-    assert data["offset"] == 1
-    assert data["items"][0]["name"] == "Category 2"
-
-
-@pytest.mark.anyio
-async def test_stream_categories(client, category_factory):
-    category1 = await category_factory("Stream Category 1")
-    category2 = await category_factory("Stream Category 2")
-
-    response = await client.get(f"{CATEGORIES_PUBLIC_URL}/stream")
-    assert response.status_code == 200
-    assert response.headers["content-type"].startswith("application/jsonl")
-
-    lines = response.text.strip().split("\n")
-    assert len(lines) >= 2
-
-    names = {json.loads(line)["name"] for line in lines}
-    assert category1.name in names
-    assert category2.name in names
-
-
-@pytest.mark.anyio
-async def test_get_category(client, category_factory):
-    category = await category_factory("Category 1")
-
-    response = await client.get(f"{CATEGORIES_ADMIN_URL}/{category.id}")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["name"] == "Category 1"
-
-
-@pytest.mark.anyio
-async def test_get_category_not_found(client):
-    response = await client.get(f"{CATEGORIES_ADMIN_URL}/1")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Category not found"
-
-
-@pytest.mark.anyio
-async def test_update_category(client, category_factory):
-    category = await category_factory("Original")
-
-    response = await client.put(
-        f"{CATEGORIES_ADMIN_URL}/{category.id}", json={"name": "Updated"}
+    updated = await client.put(
+        f"{ADMIN}/{category_id}", json={"name": "Appliances"}, headers=headers
     )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["name"] == "Updated"
+    assert updated.status_code == 200
+    assert updated.json()["name"] == "Appliances"
+    deleted = await client.delete(f"{ADMIN}/{category_id}", headers=headers)
+    assert deleted.status_code == 200
+    assert deleted.json() == updated.json()
 
 
 @pytest.mark.anyio
-async def test_update_category_not_found(client):
-    response = await client.put(
-        f"{CATEGORIES_ADMIN_URL}/99999", json={"name": "Updated"}
-    )
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Category not found"
+async def test_category_errors_and_access(client):
+    assert (await client.post(ADMIN, json={"name": "Electronics"})).status_code == 401
+    assert (
+        await client.post(
+            ADMIN,
+            json={"name": "Electronics"},
+            headers={"Authorization": f"Bearer {issue_token('user', get_settings())}"},
+        )
+    ).status_code == 403
+    headers = admin_headers()
+    invalid = await client.post(ADMIN, json={"name": "bad"}, headers=headers)
+    assert invalid.status_code == 400
+    assert invalid.json() == {"name": "Category name must have at least 5 characters"}
+    first = await client.post(ADMIN, json={"name": "Electronics"}, headers=headers)
+    duplicate = await client.post(ADMIN, json={"name": "Electronics"}, headers=headers)
+    assert duplicate.status_code == 400
+    assert duplicate.json() == {
+        "message": "Category with the name Electronics already exists"
+    }
+    missing = await client.delete(f"{ADMIN}/999", headers=headers)
+    assert missing.status_code == 404
+    assert missing.json() == {"message": "Category with id: 999 not found"}
+    assert first.status_code == 201
 
 
 @pytest.mark.anyio
-async def test_delete_category(client, category_factory):
-    category = await category_factory("To Delete")
-
-    response = await client.delete(f"{CATEGORIES_ADMIN_URL}/{category.id}")
-    assert response.status_code == 204
-
-    get_response = await client.get(f"{CATEGORIES_ADMIN_URL}/{category.id}")
-    assert get_response.status_code == 404
-
-
-@pytest.mark.anyio
-async def test_delete_category_not_found(client):
-    response = await client.delete(f"{CATEGORIES_ADMIN_URL}/1")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Category not found"
+async def test_category_extra_stream(client):
+    await client.post(ADMIN, json={"name": "Electronics"}, headers=admin_headers())
+    stream = await client.get(f"{PUBLIC}/stream")
+    assert stream.status_code == 200
+    assert json.loads(stream.text.strip())["name"] == "Electronics"

@@ -14,11 +14,31 @@ from app.schemas.category import (
     CategoryOrNone,
 )
 from app.schemas.common import PaginationParams
+from app.repositories.pagination import paginate
+
+SORTABLE = {
+    "id": Category.id,
+    "name": Category.name,
+    "createdAt": Category.created_at,
+    "updatedAt": Category.updated_at,
+}
 
 
 class CategoryRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
+
+    async def page(
+        self, page_number: int, page_size: int, sort_by: str, sort_order: str
+    ) -> dict:
+        return await paginate(
+            self._session,
+            select(Category),
+            page_number,
+            page_size,
+            SORTABLE[sort_by],
+            sort_order,
+        )
 
     async def list(self) -> list[Category]:
         result = await self._session.execute(select(Category))
@@ -41,6 +61,7 @@ class CategoryRepository:
         try:
             await self._session.commit()
         except IntegrityError as exc:
+            await self._session.rollback()
             raise CategoryDuplicatedError() from exc
         await self._session.refresh(category)
         return category
@@ -58,7 +79,11 @@ class CategoryRepository:
             return None
         if category_update.name is not None:
             category.name = category_update.name
-        await self._session.commit()
+        try:
+            await self._session.commit()
+        except IntegrityError as exc:
+            await self._session.rollback()
+            raise CategoryDuplicatedError() from exc
         await self._session.refresh(category)
         return category
 

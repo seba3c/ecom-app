@@ -13,17 +13,17 @@ db-reset:
 	docker compose down db -v
 
 # Run the FastAPI app with auto-reload (uvicorn --reload)
-run-uvicorn: db-up
+run-uvicorn: migrate
 	uv run uvicorn app.main:app --reload
 
 # Run via FastAPI CLI dev server (supports auto-reload and type checking)
-run-fastapi: db-up
+run-fastapi: migrate
 	uv run fastapi dev
 
 # Run all tests with verbose output against the test DB (overrides db with test config)
 test: db-down
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d db --wait
-	DATABASE_URL=mysql+aiomysql://fa_ecom_user:fa_ecom_pass@localhost:3307/fa_ecom_test uv run pytest -v
+	TEST_DATABASE_URL=mysql+aiomysql://fa_ecom_user:fa_ecom_pass@localhost:3307/fa_ecom_test uv run pytest -v
 
 # Run Alembic migrations against the dev DB
 migrate: db-up

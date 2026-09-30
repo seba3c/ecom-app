@@ -14,6 +14,8 @@ dependencies = [
     "cryptography>=42",
     "fastapi-pagination>=0.15.12",
     "asgi-correlation-id>=4.3.4",
+    "bcrypt>=5.0.0",
+    "pyjwt>=2.15.1",
 ]
 
 [dependency-groups]
@@ -23,6 +25,7 @@ dev = [
     "httpx>=0.27",
     "ruff>=0.15.11",
     "pre-commit>=4.6.0",
+    "aiosqlite>=0.22.1",
 ]
 
 [tool.pytest.ini_options]
