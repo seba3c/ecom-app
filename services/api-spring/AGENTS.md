@@ -1,143 +1,59 @@
-# AGENTS.md
+# Spring Boot Agent Context
 
-## Build Commands
+## Commands
 
 ```bash
-./gradlew build
-./gradlew bootRun      # starts on port 8080
-./gradlew test
-./gradlew test --tests "com.ecommerce.project.SbEcomApplicationTests"
+make setup        # resolve dependencies and compile application classes
+make run          # run with the default MySQL profile
+make test         # run the JUnit test suite
+make code-format  # apply Spotless formatting and unused-import cleanup
+make build        # build and verify the application
 ```
+
+## Database
+
+- The default `mysql` profile uses Spring Boot Docker Compose support and the `mysql` service in `docker-compose.yml`.
+- `make run-h2` uses an in-memory H2 database and disables Docker Compose.
+- `make run-postgres` starts the Compose PostgreSQL service.
+- Tests select the H2 test configuration and do not require a database container.
+- Database connection values can be overridden with `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and `DB_PASSWORD`.
 
 ## Architecture
 
-Spring Boot 4.0 REST API (Java 21) with **layer-based packaging**:
+- `controller/` contains REST controllers rooted at `/api`.
+- `dto/` contains request and response DTOs.
+- `model/` contains JPA entities; entities inherit audit fields from `Auditable`.
+- `service/` uses interface and implementation pairs for business logic.
+- `repository/` contains Spring Data JPA repositories.
+- `security/` contains authentication, authorization, users, and JWT handling.
+- `config/`, `exception/`, and `util/` contain shared application infrastructure.
 
-```
-src/main/java/com/ecommerce/project/
-├── model/          # JPA entities (Product, Category, Cart, CartItem, Address, Order, OrderItem, OrderStatus, Payment, User, Role)
-│   └── Auditable   # @MappedSuperclass with createdAt/updatedAt/createdBy/updatedBy
-├── dto/            # Request/Response DTOs (<Entity><Action>Request/Response convention)
-├── repository/     # Spring Data JPA repositories
-├── service/        # Interface + Impl pattern
-├── controller/     # @RestController classes
-├── config/         # Configuration classes (AppConfig, AuditConfig, H2ConsoleConfig)
-├── exception/      # GlobalExceptionHandler, ResourceNotFoundException, APIException
-├── util/           # AuthUtils (current-user helpers)
-└── security/       # Spring Security + JWT sub-package
-    ├── config/     # WebSecurityConfig, SeedUserProperties
-    ├── controller/ # AuthController
-    ├── dto/        # LoginRequest, SignupRequest, UserInfoResponse, MessageResponse
-    ├── jwt/        # JwtUtils, JwtGenerator, JwtParser, JwtValidator, JwtAuthTokenFilter, JwtAuthEntryPoint
-    ├── repository/ # UserRepository, RoleRepository
-    └── service/    # UserDetailsServiceImpl, UserDetailsImpl
-```
+Preserve the shared behavior defined in `contracts/openapi/openapi.yaml`. Keep backend-specific behavior behind profiles or clearly named adapters.
 
-## Key Facts
+## Naming
 
-- Uses **Spring Data JPA**; default active profile is **mysql** (Docker Compose spins up MySQL)
-- Switch to H2 with `-Dspring.profiles.active=h2`; H2 console at `/h2-console` (`jdbc:h2:mem:testdb`)
-- PostgreSQL profile also available (`-Dspring.profiles.active=postgres`)
-- **Spring Security is active** — stateless JWT cookie-based auth (`ecommerce-app` cookie, 24 h)
-- Roles: `ROLE_USER`, `ROLE_SELLER`, `ROLE_ADMIN`
-- Seed users created on startup (configured via `spring.app.seed-users` in `application.properties`):
-  - `user / userpass` → ROLE_USER
-  - `seller / sellerpass` → ROLE_SELLER
-  - `admin / adminpass` → ROLE_USER, ROLE_SELLER, ROLE_ADMIN
-- All entities extend `Auditable` — JPA auditing writes `created_at`, `updated_at`, `created_by`, `updated_by` automatically
+- Name controllers, services, repositories, entities, and DTOs for the singular domain entity.
+- Name service interfaces `<Entity>Service` and implementations `<Entity>ServiceImpl`.
+- Name DTOs by entity and purpose, such as `ProductCreateRequest` or `ProductDetailResponse`.
+- Name tests after the class under test with a `Test` suffix in the matching package.
 
-## API Endpoints
+## Adding an Endpoint
 
-| Method | Path | Auth |
-|--------|------|------|
-| POST | `/api/auth/signin` | public |
-| POST | `/api/auth/signup` | public |
-| GET | `/api/auth/username` | public |
-| GET | `/api/auth/user` | public |
-| POST | `/api/auth/signout` | public |
-| GET | `/api/public/categories` | public |
-| POST | `/api/admin/categories` | ROLE_ADMIN |
-| PUT | `/api/admin/categories/{id}` | ROLE_ADMIN |
-| DELETE | `/api/admin/categories/{id}` | ROLE_ADMIN |
-| GET | `/api/public/products` | public |
-| GET | `/api/public/products/{productId}` | public |
-| GET | `/api/public/products/keyword/{keyword}` | public |
-| GET | `/api/public/categories/{categoryId}/products` | public |
-| POST | `/api/admin/categories/{categoryId}/products` | ROLE_ADMIN |
-| PUT | `/api/admin/products/{productId}` | ROLE_ADMIN |
-| DELETE | `/api/admin/products/{productId}` | ROLE_ADMIN |
-| GET | `/api/addresses` | authenticated |
-| GET | `/api/addresses/{id}` | authenticated |
-| POST | `/api/addresses` | authenticated |
-| PUT | `/api/addresses/{id}` | authenticated |
-| DELETE | `/api/addresses/{id}` | authenticated |
-| GET | `/api/my_cart` | authenticated |
-| POST | `/api/my_cart/{productId}/quantity/{quantity}` | authenticated |
-| PUT | `/api/my_cart/{productId}/quantity/{quantity}` | authenticated |
-| DELETE | `/api/my_cart/{productId}` | authenticated |
-| GET | `/api/admin/carts` | ROLE_ADMIN |
-| POST | `/api/orders` | authenticated |
-
-## Git Branch Naming
-
-`<ai_tool_name>/<type>/<branch-name>` (e.g., `gemini/feature/add-product-entity`)
-
-Where `<ai_tool_name>` is the name of the AI tool executing, i.e., claude, gemini, codex, opencode, etc.
-
-## Branching Rules
-
-- **Never commit directly to `main`.** All new features, bug fixes, and changes must be implemented on a dedicated branch.
-- Create a branch before making any code changes.
-- Open a pull request to merge changes back into `main`.
-
-## Commit Message Format
-
-Commit messages must include the AI tool name and the model used in the footer:
-
-```
-<type>: <short description>
-
-<optional body>
-
-AI-Tool: <tool-name> (<model-id>)
-```
-
-If the changes were authored by one model but executed (e.g., applied, run, or reviewed) by a different model, list both:
-
-```
-AI-Tool: <tool-name> (<authoring-model-id>) / <tool-name> (<executing-model-id>)
-```
-
-Examples:
-
-```
-feat: add product search endpoint
-
-AI-Tool: claude (claude-sonnet-4-6)
-```
-
-```
-fix: correct category validation logic
-
-AI-Tool: gemini (gemini-2.5-pro) / claude (claude-sonnet-4-6)
-```
+1. Add the route to the appropriate `@RestController` under `controller/` or `security/controller/`.
+2. Put business logic in the service layer and persistence in a repository.
+3. Use request and response DTOs rather than exposing JPA entities.
+4. Add controller tests with MockMvc and focused service tests.
+5. If the endpoint is portable, update and verify the shared OpenAPI contract and both backends.
 
 ## Testing
 
-- JUnit 5 with Spring Boot Test
-- Integration tests use `@SpringBootTest`
-- MockMvc for controller tests
+- Tests use JUnit 5 and Spring Boot Test.
+- Controller tests use MockMvc.
+- Use focused Gradle test filters while developing, then run `make test`.
+- Authentication tests should cover cookie and bearer-token behavior where relevant.
 
-## No Lint/Typecheck
+## Tooling
 
-No Checkstyle, Spotless, or other lint tools configured. Build success = code is valid.
-
-## Custom Agents
-
-OpenCode uses `.opencode/agents/` for custom agents. To invoke:
-
-```
-@spring-test-planner analyze CategoryServiceImpl
-```
-
-This will create a test plan and hand off to `@spring-test-writer` to implement.
+- Run `make code-format` to apply Palantir Java Format and remove unused imports through Spotless.
+- Use the checked-in Gradle wrapper; do not require a system Gradle installation.
+- Keep dependency and plugin changes in `build.gradle.kts`.

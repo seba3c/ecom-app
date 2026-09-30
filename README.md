@@ -41,9 +41,10 @@ Commands can also be run directly from the service directories.
 
 ```bash
 cd services/api-spring
-./gradlew bootRun
-./gradlew test
-./gradlew spotlessCheck
+make setup
+make run
+make test
+make code-format
 ```
 
 See [the Spring API README](services/api-spring/README.md) for configuration details.
@@ -52,11 +53,11 @@ See [the Spring API README](services/api-spring/README.md) for configuration det
 
 ```bash
 cd services/api-fastapi
-uv sync
+make setup
 make migrate
-make run-uvicorn
+make run
 uv run pytest -v
-make code-check
+make code-format
 ```
 
 See [the FastAPI README](services/api-fastapi/README.md) for configuration details.

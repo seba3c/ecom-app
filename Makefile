@@ -10,10 +10,10 @@ help: ## Show the available development commands
 		'  make web           Run the React frontend (not scaffolded yet)'
 
 dev-spring: ## Run the Spring Boot backend
-	./services/api-spring/gradlew -p services/api-spring bootRun
+	$(MAKE) -C services/api-spring run
 
 dev-fastapi: ## Run the FastAPI backend
-	$(MAKE) -C services/api-fastapi run-uvicorn
+	$(MAKE) -C services/api-fastapi run
 
 web: ## Run the React frontend once it has been scaffolded
 	@printf '%s\n' 'The React frontend has not been scaffolded yet (apps/web).' >&2

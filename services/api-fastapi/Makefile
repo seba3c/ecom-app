@@ -1,4 +1,10 @@
-.PHONY: db-up db-down db-reset run-uvicorn run-fastapi test migrate migrate-rollback code-check code-fix code-format dep-sync pre-commit-install pre-commit-run docker-run docker-test seed
+.PHONY: setup run db-up db-down db-reset run-uvicorn run-fastapi test migrate migrate-rollback code-format dep-sync pre-commit-install pre-commit-run docker-run docker-test seed
+
+# Install and synchronize project dependencies
+setup: dep-sync
+
+# Run the default development server
+run: run-uvicorn
 
 # Start the dev DB container and wait until healthy
 db-up:
@@ -33,17 +39,9 @@ migrate: db-up
 migrate-rollback: db-up
 	uv run alembic downgrade -1
 
-# Check for linting issues and verify code formatting (read-only)
-code-check:
-	uv run ruff check .
-	uv run ruff format --check .
-
-# Auto-fix linting issues (does not modify formatting)
-code-fix:
-	uv run ruff check --fix .
-
-# Auto-format code (indentation, line breaks, etc.)
+# Auto-fix lint issues and format the code
 code-format:
+	uv run ruff check --fix .
 	uv run ruff format .
 
 # Sync dependencies from pyproject.toml
