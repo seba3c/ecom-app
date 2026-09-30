@@ -1,78 +1,77 @@
 # ecom-app
 
-Shared client workspace for two ecommerce backend implementations. This repository will contain the React frontend and developer utilities used with both APIs:
+Polyglot monorepo for two compatible ecommerce backend implementations, a future React frontend, and shared development utilities.
 
-- [`seba3c/sb-ecom`](https://github.com/seba3c/sb-ecom) — Java 21 and Spring Boot implementation, served at `http://localhost:8080`.
-- [`seba3c/fa-ecom`](https://github.com/seba3c/fa-ecom) — Python 3.12 and FastAPI implementation, served at `http://localhost:8000`.
-
-The FastAPI project follows the Spring Boot API contract, including routes, payloads, pagination, authentication, and role checks. The frontend should therefore be able to use either backend by changing its API base URL.
-
-## Repository status
-
-The React application has not been scaffolded yet. The repository currently contains the Bruno API collection under `utils/bruno-api`.
+## Repository layout
 
 ```text
 ecom-app/
-|-- README.md
-|-- AGENT.md
-`-- utils/
-    `-- bruno-api/       # Requests for exercising the shared API contract
+|-- apps/
+|   `-- web/                 # React frontend placeholder
+|-- services/
+|   |-- api-spring/          # Java 21, Spring Boot 4, Gradle
+|   `-- api-fastapi/         # Python 3.12, FastAPI, uv
+|-- contracts/
+|   `-- openapi/             # Shared API contract placeholder
+`-- tools/
+    `-- bruno-api/           # Bruno API collection
 ```
 
-React setup and development commands should be added here after the application is initialized.
+The backend projects retain their native build tools and can be developed independently. Their original `main` histories were imported without squashing.
 
-## Backend setup
+## Root development commands
 
-The backend repositories are siblings of this repository. Follow each backend's README for complete setup details.
+Run one backend implementation at a time:
+
+```bash
+make dev-spring    # http://localhost:8080/api
+make dev-fastapi   # http://localhost:8000/api
+make help          # list root commands
+```
+
+Both commands run in the foreground and can be stopped with Ctrl-C. Each backend manages its own database setup as described in its service README.
+
+The React application has not been scaffolded. For now, `make web` returns an explanatory error; the target will delegate to the frontend development server when the toolchain is introduced.
+
+## Backend commands
+
+Commands can also be run directly from the service directories.
 
 ### Spring Boot
 
 ```bash
-cd ../sb-ecom
+cd services/api-spring
 ./gradlew bootRun
+./gradlew test
+./gradlew spotlessCheck
 ```
 
-The API is available at `http://localhost:8080/api`.
+See [the Spring API README](services/api-spring/README.md) for configuration details.
 
 ### FastAPI
 
 ```bash
-cd ../fa-ecom
+cd services/api-fastapi
 uv sync
 make migrate
 make run-uvicorn
+uv run pytest -v
+make code-check
 ```
 
-The API is available at `http://localhost:8000/api`, and its Swagger UI is available at `http://localhost:8000/docs`.
+See [the FastAPI README](services/api-fastapi/README.md) for configuration details.
 
-Run only one backend at a time unless their database and port configuration has been adjusted to avoid conflicts.
+## Shared API behavior
 
-## Bruno API collection
+Both implementations expose routes below `/api`. Until the canonical OpenAPI document is added under `contracts/openapi`, the Spring API defines the shared paths, payloads, pagination, authentication, and authorization behavior.
 
-Open `utils/bruno-api` as a collection in [Bruno](https://www.usebruno.com/). Every request uses the `api_url` environment variable.
+Local authentication uses the `ecommerce-app` HTTP-only JWT cookie. Development seed accounts are `user/userpass`, `seller/sellerpass`, and `admin/adminpass`.
 
-Set `api_url` according to the backend you want to exercise:
+## Bruno collection
+
+Open `tools/bruno-api` in [Bruno](https://www.usebruno.com/). Requests use the `api_url` environment variable rather than a hard-coded host:
 
 | Backend | `api_url` |
 | --- | --- |
 | Spring Boot | `http://localhost:8080/api` |
 | FastAPI | `http://localhost:8000/api` |
-
-The included `Ecom API - localhost` environment targets FastAPI on port 8000 by default. Its `api_url` value is assembled from `api_host` and `api_port`.
-
-## Development accounts
-
-Both backends seed the same local users:
-
-| Username | Password | Roles |
-| --- | --- | --- |
-| `user` | `userpass` | User |
-| `seller` | `sellerpass` | Seller |
-| `admin` | `adminpass` | User, seller, and administrator |
-
-Authentication is based on JWTs. Sign-in returns a token and sets the HTTP-only `ecommerce-app` cookie used by protected API routes.
-
-## Related documentation
-
-- Spring Boot: [README](https://github.com/seba3c/sb-ecom/blob/main/README.md) and [agent guidance](https://github.com/seba3c/sb-ecom/blob/main/AGENTS.md)
-- FastAPI: [README](https://github.com/seba3c/fa-ecom/blob/main/README.md) and [agent guidance](https://github.com/seba3c/fa-ecom/blob/main/AGENTS.md)

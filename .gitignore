@@ -1,0 +1,31 @@
+# Operating-system and editor files
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Java and Gradle output
+.gradle/
+build/
+out/
+*.class
+
+# Python output and environments
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# JavaScript output and dependencies
+node_modules/
+dist/
+coverage/
+.pnpm-store/
